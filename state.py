@@ -6,7 +6,7 @@ class Registration(StatesGroup):
     get_name_state = State()
     get_phone_number_state = State()
     get_location_state = State()
-    get_gender = State()
+    get_gender_state = State()
 
 
 # Choosing Products proccess pr = product

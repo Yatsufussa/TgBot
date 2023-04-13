@@ -4,6 +4,7 @@ import buttons
 from aiogram.types import ReplyKeyboardRemove
 from state import Registration, Order, GetProduct, Cart
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
+import database
 
 bot = Bot("5801401239:AAH0A4dIoentafuDYpd7FlMNdzRE7lcrxyk")
 dp = Dispatcher(bot, storage=MemoryStorage())
@@ -29,6 +30,7 @@ async def user_name(message, state=Registration.get_name_state):
 
 @dp.message_handler(state=Registration.get_phone_number_state, content_types=['contact'])
 async def user_number(message, state=Registration.get_phone_number_state):
+    user_number = message.contact.phone_number
     await state.update_data(phone_number=user_number)
     await message.answer('Share location now', reply_markup=buttons.location_kb())
     await Registration.get_location_state.set()
@@ -44,7 +46,20 @@ async def user_location(message, state=Registration.get_location_state):
 
 @dp.message_handler(state=Registration.get_gender_state, content_types=['text'])
 async def user_gender(message, state=Registration.get_gender_state):
-    await state.up
+    user_gender = message.text
+    await state.update_data(gender=user_gender)
+    await message.answer("Registration completed!",reply_markup= buttons.gender_kb())
+    # Saving user into database
+    all_info = await state.get_data()
+    name = all_info.get('name')
+    phone_number = all_info.get('number')
+    latitude = all_info.get('latitude')
+    longitude = all_info.get('longitude')
+    gender = user_gender
+    user_id = message.from_user.id
 
+    database.add_user(user_id,name,phone_number,latitude,longitude,gender)
+    print(database.get_users())
+    await state.finish()
 
 executor.start_polling(dp)
