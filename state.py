@@ -11,7 +11,6 @@ class Registration(StatesGroup):
 
 # Choosing Products proccess pr = product
 class GetProduct(StatesGroup):
-    get_pr_name = State()
     get_pr_count = State()
 
 
@@ -26,3 +25,10 @@ class Order(StatesGroup):
     wait_location = State()
     wait_pay_type = State()
     wait_accept = State()
+
+
+# class Get product
+# Write the proccess of choosing the amount of the products
+# Send to the stage of getting amount of products
+# And create handler for saving chosen product
+
